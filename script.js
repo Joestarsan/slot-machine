@@ -21,7 +21,7 @@ function spinReel(reel) {
     }
     reelInner.innerHTML = html;
     
-    const symbolHeight = 90; // Соответствует высоте .reel в CSS
+    const symbolHeight = 100; // Соответствует высоте .reel в CSS
     const totalSpins = 2 + Math.random() * 2; // От 2 до 4 полных оборотов
     const extraSpins = Math.floor(Math.random() * symbols.length);
     const finalPosition = -(symbolHeight * (totalSpins * symbols.length + extraSpins));
@@ -30,7 +30,7 @@ function spinReel(reel) {
     reelInner.style.transform = 'translateY(0)';
     
     setTimeout(() => {
-        reelInner.style.transition = 'transform 4s cubic-bezier(.17,.67,.83,.67)';
+        reelInner.style.transition = 'transform 4s cubic-bezier(.25,.1,.25,1)';
         reelInner.style.transform = `translateY(${finalPosition}px)`;
     }, 50);
 
