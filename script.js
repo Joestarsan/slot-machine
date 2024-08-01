@@ -9,11 +9,11 @@ document.body.className = tg.colorScheme;
 
 function initializeReels() {
     reels.forEach(reel => {
-        const symbols = Array.from({length: 13}, (_, i) => `images/symbol${i + 1}.jpg`);
+        const symbols = Array.from({length: 14}, (_, i) => `images/symbol${i + 1}.jpg`);
         const reelInner = reel.querySelector('.reel-inner');
         
         let html = '';
-        for (let i = 0; i < 30; i++) { // Возвращаем 30 символов для "бесконечной" ленты
+        for (let i = 0; i < 30; i++) {
             const symbol = symbols[i % symbols.length];
             html += `<div class="symbol"><img src="${symbol}" alt="Symbol ${i+1}"></div>`;
         }
@@ -23,9 +23,10 @@ function initializeReels() {
 
 function spinReels() {
     return new Promise(resolve => {
+        let results = [];
         reels.forEach((reel, index) => {
             const reelInner = reel.querySelector('.reel-inner');
-            const symbolHeight = 100; // Высота одного символа
+            const symbolHeight = 100;
             const totalSymbols = reelInner.children.length;
             const spinDuration = 5 + index;
             
@@ -40,15 +41,20 @@ function spinReels() {
                 reelInner.style.transform = `translateY(${targetOffset}px)`;
             }, 50);
 
-            // Сброс позиции, когда достигнут конец ленты
             reelInner.addEventListener('transitionend', function resetPosition() {
+                const finalPosition = targetOffset % (symbolHeight * 14);
                 reelInner.style.transition = 'none';
-                reelInner.style.transform = `translateY(${targetOffset % (symbolHeight * (totalSymbols / 3))}px)`;
+                reelInner.style.transform = `translateY(${finalPosition}px)`;
                 reelInner.removeEventListener('transitionend', resetPosition);
+
+                const resultIndex = (Math.abs(finalPosition / symbolHeight)) % 14;
+                results.push(resultIndex);
+
+                if (results.length === reels.length) {
+                    resolve(results);
+                }
             });
         });
-
-        setTimeout(resolve, 7000);
     });
 }
 
@@ -56,22 +62,17 @@ spinButton.addEventListener('click', async () => {
     resultDisplay.textContent = '';
     spinButton.disabled = true;
     
-    await spinReels();
+    const results = await spinReels();
     
-    checkWin();
+    checkWin(results);
     spinButton.disabled = false;
 });
 
-function checkWin() {
-    const visibleSymbols = Array.from(reels).map(reel => {
-        const reelInner = reel.querySelector('.reel-inner');
-        const offset = Math.abs(parseInt(reelInner.style.transform.replace('translateY(', '').replace('px)', '')));
-        const visibleIndex = Math.floor(offset / 100) % 13; // 13 - количество уникальных символов
-        return `images/symbol${visibleIndex + 1}.jpg`;
-    });
+function checkWin(results) {
+    console.log("Visible symbols:", results); // Для отладки
 
     let message;
-    if (visibleSymbols[0] === visibleSymbols[1] && visibleSymbols[1] === visibleSymbols[2]) {
+    if (results[0] === results[1] && results[1] === results[2]) {
         message = "Поздравляю, вы ПИДОРАС!";
         resultDisplay.style.color = 'green';
     } else {
