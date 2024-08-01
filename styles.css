@@ -1,38 +1,45 @@
 body {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
     align-items: center;
+    justify-content: flex-start;
     height: 100vh;
     margin: 0;
     padding: 20px;
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0;
+    background-image: url('background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     box-sizing: border-box;
 }
 
 h1 {
     font-size: 24px;
     margin-bottom: 20px;
-    color: #333;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 #slot-machine {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 300px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     margin-bottom: 20px;
 }
 
 .reel {
-    width: 90px;
-    height: 90px;
-    margin: 5px;
-    border: 2px solid #333;
+    width: 120px;
+    height: 120px;
+    border: 2px solid #fff;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
+}
+
+.reel:last-child {
+    grid-column: 1 / -1;
+    justify-self: center;
 }
 
 .reel-inner {
@@ -40,8 +47,8 @@ h1 {
 }
 
 .symbol {
-    width: 90px;
-    height: 90px;
+    width: 120px;
+    height: 120px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -61,6 +68,8 @@ h1 {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 0 10px rgba(255,255,255,0.3);
 }
 
 #spin-button:active {
@@ -72,15 +81,15 @@ h1 {
     margin-top: 10px;
     font-weight: bold;
     text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
 }
 
 /* Стили для светлой и темной темы Telegram */
 body.light-theme {
-    background-color: #ffffff;
-    color: #000000;
+    color: #ffffff;
 }
 
 body.dark-theme {
-    background-color: #1c1c1c;
     color: #ffffff;
 }

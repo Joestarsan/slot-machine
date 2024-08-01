@@ -57,23 +57,13 @@ spinButton.addEventListener('click', () => {
 function checkWin(results) {
     let message;
     if (results[0] === results[1] && results[1] === results[2]) {
-        message = "Поздравляю, пидорас чата найден!";
+        message = "Поздравляю, вы ПИДОРАС!";
         resultDisplay.style.color = 'green';
     } else {
         message = "АНЛАК";
         resultDisplay.style.color = 'red';
     }
     resultDisplay.textContent = message;
-    
-    // Отправка результата в Telegram
-    if (tg.MainButton.isVisible) {
-        tg.MainButton.hide();
-    }
-    tg.MainButton.setText("Поделиться результатом");
-    tg.MainButton.show();
-    tg.MainButton.onClick(function(){
-        tg.sendData(message);
-    });
     
     spinButton.disabled = false;
 }
