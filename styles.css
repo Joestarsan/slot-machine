@@ -30,21 +30,20 @@ h1 {
 
 .reel {
     width: 100px;
-    height: 100px;
+    height: 100px; /* Изменено на 100px для отображения одного символа */
     border: 2px solid #fff;
     border-radius: 10px;
     overflow: hidden;
     box-shadow: 0 0 10px rgba(255,255,255,0.3);
-    display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: rgba(0, 0, 0, 0.5);
+    position: relative;
 }
 
 .reel-inner {
-    display: flex;
-    flex-direction: column;
-    transition: transform 4s cubic-bezier(.25,.1,.25,1);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
 }
 
 .symbol {
@@ -59,6 +58,7 @@ h1 {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
 }
 
 #spin-button {

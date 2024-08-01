@@ -4,59 +4,74 @@ const resultDisplay = document.getElementById('result');
 
 let tg = window.Telegram.WebApp;
 
-// Инициализация приложения
 tg.expand();
-
-// Основная тема приложения (светлая или темная)
 document.body.className = tg.colorScheme;
 
-function spinReel(reel) {
-    const symbols = Array.from({length: 13}, (_, i) => `images/symbol${i + 1}.jpg`);
-    const reelInner = reel.querySelector('.reel-inner');
-    
-    let html = '';
-    for (let i = 0; i < 30; i++) { // Увеличим количество символов для более длинной анимации
-        const symbol = symbols[Math.floor(Math.random() * symbols.length)];
-        html += `<div class="symbol"><img src="${symbol}" alt="Symbol"></div>`;
-    }
-    reelInner.innerHTML = html;
-    
-    const symbolHeight = 100; // Соответствует высоте .reel в CSS
-    const totalSpins = 2 + Math.random() * 2; // От 2 до 4 полных оборотов
-    const extraSpins = Math.floor(Math.random() * symbols.length);
-    const finalPosition = -(symbolHeight * (totalSpins * symbols.length + extraSpins));
-    
-    reelInner.style.transition = 'none';
-    reelInner.style.transform = 'translateY(0)';
-    
-    setTimeout(() => {
-        reelInner.style.transition = 'transform 4s cubic-bezier(.25,.1,.25,1)';
-        reelInner.style.transform = `translateY(${finalPosition}px)`;
-    }, 50);
-
-    return symbols[extraSpins];
+function initializeReels() {
+    reels.forEach(reel => {
+        const symbols = Array.from({length: 13}, (_, i) => `images/symbol${i + 1}.jpg`);
+        const reelInner = reel.querySelector('.reel-inner');
+        
+        let html = '';
+        for (let i = 0; i < 30; i++) { // Возвращаем 30 символов для "бесконечной" ленты
+            const symbol = symbols[i % symbols.length];
+            html += `<div class="symbol"><img src="${symbol}" alt="Symbol ${i+1}"></div>`;
+        }
+        reelInner.innerHTML = html;
+    });
 }
 
-spinButton.addEventListener('click', () => {
+function spinReels() {
+    return new Promise(resolve => {
+        reels.forEach((reel, index) => {
+            const reelInner = reel.querySelector('.reel-inner');
+            const symbolHeight = 100; // Высота одного символа
+            const totalSymbols = reelInner.children.length;
+            const spinDuration = 5 + index;
+            
+            const initialOffset = parseInt(reelInner.style.transform.replace('translateY(', '').replace('px)', '') || '0');
+            const targetOffset = initialOffset - (Math.floor(Math.random() * 10 + 20) * symbolHeight);
+            
+            reelInner.style.transition = 'none';
+            reelInner.style.transform = `translateY(${initialOffset}px)`;
+
+            setTimeout(() => {
+                reelInner.style.transition = `transform ${spinDuration}s cubic-bezier(.5, 0, .5, 1)`;
+                reelInner.style.transform = `translateY(${targetOffset}px)`;
+            }, 50);
+
+            // Сброс позиции, когда достигнут конец ленты
+            reelInner.addEventListener('transitionend', function resetPosition() {
+                reelInner.style.transition = 'none';
+                reelInner.style.transform = `translateY(${targetOffset % (symbolHeight * (totalSymbols / 3))}px)`;
+                reelInner.removeEventListener('transitionend', resetPosition);
+            });
+        });
+
+        setTimeout(resolve, 7000);
+    });
+}
+
+spinButton.addEventListener('click', async () => {
     resultDisplay.textContent = '';
     spinButton.disabled = true;
     
-    const results = [];
-    reels.forEach((reel, index) => {
-        setTimeout(() => {
-            const result = spinReel(reel);
-            results.push(result);
-            
-            if (index === reels.length - 1) {
-                setTimeout(checkWin, 4000, results); // Увеличим время до проверки выигрыша
-            }
-        }, index * 200); // Небольшая задержка между запуском барабанов
-    });
+    await spinReels();
+    
+    checkWin();
+    spinButton.disabled = false;
 });
 
-function checkWin(results) {
+function checkWin() {
+    const visibleSymbols = Array.from(reels).map(reel => {
+        const reelInner = reel.querySelector('.reel-inner');
+        const offset = Math.abs(parseInt(reelInner.style.transform.replace('translateY(', '').replace('px)', '')));
+        const visibleIndex = Math.floor(offset / 100) % 13; // 13 - количество уникальных символов
+        return `images/symbol${visibleIndex + 1}.jpg`;
+    });
+
     let message;
-    if (results[0] === results[1] && results[1] === results[2]) {
+    if (visibleSymbols[0] === visibleSymbols[1] && visibleSymbols[1] === visibleSymbols[2]) {
         message = "Поздравляю, вы ПИДОРАС!";
         resultDisplay.style.color = 'green';
     } else {
@@ -64,6 +79,6 @@ function checkWin(results) {
         resultDisplay.style.color = 'red';
     }
     resultDisplay.textContent = message;
-    
-    spinButton.disabled = false;
 }
+
+window.addEventListener('load', initializeReels);
