@@ -1,33 +1,38 @@
 body {
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
     align-items: center;
     height: 100vh;
     margin: 0;
+    padding: 20px;
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
+    box-sizing: border-box;
 }
 
 h1 {
-    font-size: 36px;
+    font-size: 24px;
     margin-bottom: 20px;
     color: #333;
 }
 
 #slot-machine {
-    text-align: center;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 300px;
+    margin-bottom: 20px;
 }
 
 .reel {
-    width: 120px;
-    height: 120px;
-    margin: 0 5px;
-    border: 3px solid #333;
+    width: 90px;
+    height: 90px;
+    margin: 5px;
+    border: 2px solid #333;
     border-radius: 10px;
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0,0,0,0.3);
-    display: inline-block;
+    box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
 
 .reel-inner {
@@ -35,8 +40,8 @@ h1 {
 }
 
 .symbol {
-    width: 120px;
-    height: 120px;
+    width: 90px;
+    height: 90px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,9 +54,8 @@ h1 {
 }
 
 #spin-button {
-    font-size: 18px;
+    font-size: 16px;
     padding: 10px 20px;
-    margin-top: 20px;
     background-color: #4CAF50;
     color: white;
     border: none;
@@ -64,9 +68,10 @@ h1 {
 }
 
 #result {
-    font-size: 24px;
-    margin-top: 20px;
+    font-size: 18px;
+    margin-top: 10px;
     font-weight: bold;
+    text-align: center;
 }
 
 /* Стили для светлой и темной темы Telegram */
